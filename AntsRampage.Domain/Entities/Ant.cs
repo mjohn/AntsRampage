@@ -1,6 +1,7 @@
 ﻿using AntsRampage.Domain.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,17 +13,27 @@ namespace AntsRampage.Domain.Entities
         public Guid Id { get; private set; } = Guid.NewGuid();
         public DateTime RequestedAt { get; private set; }
         public bool Succeed { get; private set; } = false;
+        public bool Working { get; private set; } = false;
 
-        public void SetRequestDate(DateTime requestedAt) { 
-            RequestedAt= requestedAt;
-        }
-        public void MarkFailed()
+        public TimeSpan Elapsed => _sw.Elapsed;
+
+        private Stopwatch _sw = new Stopwatch();
+
+        
+
+
+        public async Task StartWorking(DateTime requestedAt)
         {
-            Succeed = false;
+            _sw.Start();
+            Working = true;
+            RequestedAt = requestedAt;
         }
-        public void MarkSuccess()
-        {
-            Succeed = true;
+
+        public async Task EndWorking(bool succeed) 
+        { 
+            _sw.Stop();
+            Succeed = succeed;
+            Working = false;
         }
 
     }
