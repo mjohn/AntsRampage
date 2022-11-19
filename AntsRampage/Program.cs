@@ -14,9 +14,11 @@ SocketsHttpHandler _httpClientHandler = new SocketsHttpHandler()
 Console.WriteLine("Hello, World!");
 
 RequestService service = new RequestService(_httpClientHandler);
-var request = new Request(HttpMethod.Get, null, "http://google.com", 1);
+var request = new Request(HttpMethod.Get, null, "http://google.com", 100);
 await service.Start(request, HttpCompletionOption.ResponseHeadersRead);
 
+
+Console.WriteLine(service.Elapsed.Milliseconds);
 
 
 

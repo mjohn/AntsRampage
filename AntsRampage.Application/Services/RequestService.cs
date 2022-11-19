@@ -12,7 +12,7 @@ namespace AntsRampage.Application.Services
     {
         private HttpClient _httpClient;
         private Stopwatch _sw;
-
+        public TimeSpan Elapsed => _sw.Elapsed;
         public RequestService(SocketsHttpHandler _httpClientHandler)
         {
             _httpClient = new HttpClient(_httpClientHandler);
@@ -23,10 +23,11 @@ namespace AntsRampage.Application.Services
         {
             _sw.Start();
             var requestContent = !String.IsNullOrEmpty(request.Body) ? new StringContent(request.Body) : null;
-            var httpRequestMessage = new HttpRequestMessage(request.Method, request.Url) { Content = requestContent };
-
+        
             await Parallel.ForEachAsync(Enumerable.Range(0, request.TotalCount), async (uri, token) =>
             {
+                var httpRequestMessage = new HttpRequestMessage(request.Method, request.Url) { Content = requestContent };
+
                 var ant = new Ant();
                 request.Ants.Add(ant);
                 await ant.StartWorking(DateTime.UtcNow);
@@ -43,7 +44,7 @@ namespace AntsRampage.Application.Services
                     }
                 }
             });
-
+            _sw.Stop();
             return request;
         }
 
