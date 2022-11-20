@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntsRampage.Domain", "AntsR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntsRampage.Application", "AntsRampage.Application\AntsRampage.Application.csproj", "{D65CF79B-AA97-430E-B0F0-1D9A11A1F51A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntsRampage.UI", "AntsRampage.UI\AntsRampage.UI.csproj", "{35CCDD39-BF06-4940-9C02-ED4237BACFEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{D65CF79B-AA97-430E-B0F0-1D9A11A1F51A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D65CF79B-AA97-430E-B0F0-1D9A11A1F51A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D65CF79B-AA97-430E-B0F0-1D9A11A1F51A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35CCDD39-BF06-4940-9C02-ED4237BACFEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35CCDD39-BF06-4940-9C02-ED4237BACFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35CCDD39-BF06-4940-9C02-ED4237BACFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35CCDD39-BF06-4940-9C02-ED4237BACFEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

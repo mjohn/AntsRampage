@@ -11,10 +11,10 @@ namespace AntsRampage.Domain.Entities
     {
         public HttpMethod Method { get; private set; }
         public string Body { get; private set; }
-        public string Url { get; private set; }
+        public Uri Url { get; private set; }
         public int TotalCount { get; private set; }
         public List<Ant> Ants { get; private set; }
-        public Request(HttpMethod method,  string body, string url, int totalCount)
+        public Request(HttpMethod method, string body, Uri url, int totalCount)
         {
             Method = method;
             Body = body;
@@ -23,6 +23,19 @@ namespace AntsRampage.Domain.Entities
 
             Ants = new List<Ant>();
         }
+
+        public Request(HttpMethod method, string body, string url, int totalCount)
+        {
+            Method = method;
+            Body = body;
+            Url = new UriBuilder(url).Uri;
+            TotalCount = totalCount;
+
+            Ants = new List<Ant>();
+        }
+
+
+        
 
         public void AddAnt(Ant ant)
         {

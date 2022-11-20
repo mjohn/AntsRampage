@@ -14,8 +14,8 @@ SocketsHttpHandler _httpClientHandler = new SocketsHttpHandler()
 Console.WriteLine("Hello, World!");
 
 RequestService service = new RequestService(_httpClientHandler);
-var request = new Request(HttpMethod.Get, null, "http://www.google.com", 100);
-await service.Start(request, true);
+var request = new Request(HttpMethod.Get, null, new Uri("http://www.google.com"), 10);
+await service.Start(request, false);
 
 
 

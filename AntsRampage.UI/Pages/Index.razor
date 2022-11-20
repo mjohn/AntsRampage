@@ -1,0 +1,96 @@
+﻿@page "/"
+@using AntsRampage.Application.Services;
+@using AntsRampage.Domain.Entities;
+@inject RequestService RequestService
+
+
+<PageTitle>Index</PageTitle>
+
+<h1>Load Test</h1>
+
+<EditForm Model="@requestModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        HttpMethod:
+        <InputSelect id="getResponseBody" @bind-Value="requestModel.HttpMethod">
+            <option value=@HttpMethod.Get.Method selected>Get</option>
+            <option value=@HttpMethod.Post.Method>Post</option>
+        </InputSelect>
+    </div>
+    <div>
+        Url:
+        <InputText id="url" @bind-Value="requestModel.Url" />
+    </div>
+    <div>
+        Request Body:
+        <InputTextArea id="body" @bind-Value="requestModel.Body" />
+    </div>
+    <div>
+        Request Count:
+        <InputNumber id="count" @bind-Value="requestModel.Count" />
+    </div>
+    <div>
+        <InputCheckbox id="getResponseBody" @bind-Value="requestModel.GetResponseBody" /> Get Response Body
+    </div>
+    <div>
+        <button type="submit" disabled=@IsTaskRunning>Submit</button>
+    </div>
+    <hr />
+    Total Elapsed Seconds: @TotalElapsedSeconds s
+    <hr />
+    @if (requestModel.Ants?.Count > 0)
+    {
+        @foreach (var item in requestModel.Ants)
+        {
+            <div>@item.Id - @item.Succeed - @item.Elapsed.Milliseconds - @item.ResponseBody</div>
+        }
+    }
+
+</EditForm>
+
+
+@code {
+    private RequestModel requestModel = new() { HttpMethod = "GET" };
+    private bool IsTaskRunning = false;
+    public double TotalElapsedSeconds { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        IsTaskRunning = true;
+        try
+        {
+            var method = requestModel.HttpMethod == "GET" ? HttpMethod.Get : HttpMethod.Post;
+            var request = new Request(method, requestModel.Body, requestModel.Url, requestModel.Count);
+            var result = await RequestService.Start(request, requestModel.GetResponseBody);
+            requestModel.Ants = result.Ants;
+            TotalElapsedSeconds = RequestService.Elapsed.TotalSeconds;
+        }
+        catch
+        {
+            throw;
+        }
+        finally
+        {
+            IsTaskRunning = false;
+        }
+
+    }
+
+    public class RequestModel
+    {
+        public string HttpMethod { get; set; }
+        public string Body { get; set; }
+        public string Url { get; set; }
+        public int Count { get; set; }
+        public bool GetResponseBody { get; set; }
+
+        public List<Ant> Ants { get; set; }
+    }
+
+}
