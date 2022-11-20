@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace AntsRampage.Domain.Entities
@@ -14,6 +15,7 @@ namespace AntsRampage.Domain.Entities
         public DateTime RequestedAt { get; private set; }
         public bool Succeed { get; private set; } = false;
         public bool Working { get; private set; } = false;
+
         public string ResponseBody { get; private set; }
 
         public TimeSpan Elapsed => _sw.Elapsed;
