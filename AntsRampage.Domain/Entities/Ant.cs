@@ -14,6 +14,7 @@ namespace AntsRampage.Domain.Entities
         public DateTime RequestedAt { get; private set; }
         public bool Succeed { get; private set; } = false;
         public bool Working { get; private set; } = false;
+        public string ResponseBody { get; private set; }
 
         public TimeSpan Elapsed => _sw.Elapsed;
 
@@ -29,11 +30,12 @@ namespace AntsRampage.Domain.Entities
             RequestedAt = requestedAt;
         }
 
-        public async Task EndWorking(bool succeed) 
+        public async Task EndWorking(bool succeed, string responseBody) 
         { 
             _sw.Stop();
             Succeed = succeed;
             Working = false;
+            ResponseBody= responseBody;
         }
 
     }

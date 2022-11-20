@@ -19,11 +19,14 @@ namespace AntsRampage.Application.Services
             _sw = new Stopwatch();
         }
 
-        public async Task<Request> Start(Request request, HttpCompletionOption httpCompletionOption)
+        public async Task<Request> Start(Request request, bool getResponseBody)
         {
             _sw.Start();
+
+            var httpCompletionOption = getResponseBody ? HttpCompletionOption.ResponseHeadersRead : HttpCompletionOption.ResponseContentRead;
+
             var requestContent = !String.IsNullOrEmpty(request.Body) ? new StringContent(request.Body) : null;
-        
+
             await Parallel.ForEachAsync(Enumerable.Range(0, request.TotalCount), async (uri, token) =>
             {
                 var httpRequestMessage = new HttpRequestMessage(request.Method, request.Url) { Content = requestContent };
@@ -31,17 +34,28 @@ namespace AntsRampage.Application.Services
                 var ant = new Ant();
                 request.Ants.Add(ant);
                 await ant.StartWorking(DateTime.UtcNow);
-                using (var response = await _httpClient.SendAsync(httpRequestMessage, httpCompletionOption))
+                string responseBody = null;
+                try
                 {
-                    //var contentStream = await response.Content.ReadAsStreamAsync();
-                    if (response.IsSuccessStatusCode)
-                    {
-                        await ant.EndWorking(true);
+                    using (var response = await _httpClient.SendAsync(httpRequestMessage, httpCompletionOption))
+                    {         
+                        if (getResponseBody)
+                        {
+                            responseBody = await response.Content.ReadAsStringAsync();
+                        }
+                        if (response.IsSuccessStatusCode)
+                        {
+                            await ant.EndWorking(true, responseBody);
+                        }
+                        else
+                        {
+                            await ant.EndWorking(false, responseBody);
+                        }
                     }
-                    else
-                    {
-                        await ant.EndWorking(false);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    await ant.EndWorking(false, ex.ToString());
                 }
             });
             _sw.Stop();
