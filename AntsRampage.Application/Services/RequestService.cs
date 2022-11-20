@@ -19,7 +19,7 @@ namespace AntsRampage.Application.Services
             _sw = new Stopwatch();
         }
 
-        public async Task<Request> Start(Request request, bool getResponseBody)
+        public async Task<Request> Start(Request request, bool getResponseBody, int maxParallelOperations)
         {
             _sw.Start();
 
@@ -27,7 +27,7 @@ namespace AntsRampage.Application.Services
 
             var requestContent = !String.IsNullOrEmpty(request.Body) ? new StringContent(request.Body) : null;
 
-            await Parallel.ForEachAsync(Enumerable.Range(0, request.TotalCount), async (uri, token) =>
+            await Parallel.ForEachAsync(Enumerable.Range(0, request.TotalCount), new ParallelOptions() { MaxDegreeOfParallelism = maxParallelOperations}, async (uri, token) =>
             {
                 var httpRequestMessage = new HttpRequestMessage(request.Method, request.Url) { Content = requestContent };
 

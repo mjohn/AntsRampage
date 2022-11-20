@@ -31,6 +31,10 @@
         <InputNumber id="count" @bind-Value="requestModel.Count" />
     </div>
     <div>
+        Max Parallel Operations Count:
+        <InputNumber id="maxParallelOperations" @bind-Value="requestModel.MaxParallelOperations" />
+    </div>
+    <div>
         <InputCheckbox id="getResponseBody" @bind-Value="requestModel.GetResponseBody" /> Get Response Body
     </div>
     <div>
@@ -67,7 +71,7 @@
         {
             var method = requestModel.HttpMethod == "GET" ? HttpMethod.Get : HttpMethod.Post;
             var request = new Request(method, requestModel.Body, requestModel.Url, requestModel.Count);
-            var result = await RequestService.Start(request, requestModel.GetResponseBody);
+            var result = await RequestService.Start(request, requestModel.GetResponseBody, requestModel.MaxParallelOperations);
             requestModel.Ants = result.Ants;
             TotalElapsedSeconds = RequestService.Elapsed.TotalSeconds;
         }
@@ -88,6 +92,7 @@
         public string Body { get; set; }
         public string Url { get; set; }
         public int Count { get; set; }
+        public int MaxParallelOperations { get; set; }
         public bool GetResponseBody { get; set; }
 
         public List<Ant> Ants { get; set; }
